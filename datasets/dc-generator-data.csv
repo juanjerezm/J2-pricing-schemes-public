@@ -1,0 +1,4 @@
+,'type','capacity - cold','ramping rate','efficiency - cold','VOM_c','VOM_h','placeholder'
+EC,CO,1,1,timeVar,3,-,
+FC,CO,1,1,timeVar,0.01,-,
+HP_EHR,HR,-,1,timeVar,-,1.80,
