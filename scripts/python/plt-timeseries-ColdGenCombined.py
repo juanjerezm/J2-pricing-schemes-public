@@ -3,7 +3,19 @@ import matplotlib
 import pandas as pd
 from pathlib import Path
 
-fontsize = 9
+# save = False
+save = True
+# show = True
+show = False
+fontsize = 8
+DPI = 1200
+
+width = 15  # cm
+height = 14.5  # cm
+
+dir_output              = Path(f'M:/J2/results/selected_weeks/consolidated/figures')
+filename_output         = f'ColdGeneration-Combined.png'
+
 matplotlib.rcParams['font.family'] = 'Times New Roman'
 matplotlib.rcParams['font.size'] = fontsize
 
@@ -16,10 +28,6 @@ titles_dict = {
     'y_title_primary': 'DC cooling generation [MWh]',
     'y_title_secondary': 'Waste-heat price [€/MWh]',
 }
-
-DPI = 96
-width_cm = 16  # Adjusted for two columns
-height_cm = 16  # Adjust based on the number of scenarios
 
 tech_names_mapping = {
     'FC': 'Free cooling',
@@ -35,9 +43,6 @@ colors = {
 
 cases = ['C1', 'C2']
 
-dir_output              = Path(f'M:/J2/results/selected_weeks/consolidated/figures')
-filename_output         = f'ColdGeneration-Combined.png'
-
 # Create a figure with subplots
 num_scenarios = 0  # This will be updated based on the data
 for case in cases:
@@ -51,7 +56,7 @@ for case in cases:
     scenarios = data_ColdGeneration['scenario'].unique()
     num_scenarios = max(num_scenarios, len(scenarios))
 
-fig, axes = plt.subplots(num_scenarios, len(cases), figsize=(width_cm/2.54, height_cm/2.54), dpi=DPI)
+fig, axes = plt.subplots(num_scenarios, len(cases), figsize=(width/2.54, height/2.54), dpi=DPI)
 
 handles, labels = [], []
 line_handle = []
@@ -125,13 +130,13 @@ for case_idx, case in enumerate(cases):
 fig.text(0.00, 0.5, s=titles_dict['y_title_primary'], va='center', ha='center', rotation='vertical', fontweight='bold')
 fig.text(1.00, 0.5, s=titles_dict['y_title_secondary'], va='center', ha='center', rotation='vertical', fontweight='bold')
 
-fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.0), ncol=4, fancybox=True, shadow=True)
-
+fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, 0.0), ncol=4, fancybox=True, shadow=False)
 
 # Adjust layout and save the figure
-plt.tight_layout()
-fig.savefig(str(dir_output/filename_output), dpi=900, bbox_inches='tight')
-# plt.show()
+plt.tight_layout(rect=[0, 0.04, 1, 1])
 
-print(' >> Combined plot for C1 and C2 Finished!')
-print(' >> ------------------------------------')
+if save:
+    fig.savefig(str(dir_output/filename_output), dpi=DPI, bbox_inches='tight')
+    print(f' >> Combined plot for C1 and C2 saved to {dir_output/filename_output}')
+if show:
+    plt.show()

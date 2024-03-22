@@ -2,20 +2,24 @@ import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
 
+save = True
+show = False
 
-fontsize = 9
+fontsize = 8
 matplotlib.rcParams['font.family'] = 'Times New Roman'
 matplotlib.rcParams['font.size'] = fontsize
 
-output_path = f"M:/J2/results/selected_weeks/consolidated/figures/HeatPrice-Comparison.png"
+plot_path = f"M:/J2/results/selected_weeks/consolidated/figures/HeatPrice-Comparison.png"
 
 title_dict = {
     'x_title': 'Timesteps',
     'y_title_primary': 'Waste-heat price [€/MWh]',
 }
 
-DPI = 96
-width_cm = 15
+map_colors = ['C0', 'C1', 'C2', 'C5']
+
+DPI = 1200
+width_cm = 14
 height_cm = 5.5
 
 border_xticks_position = [0, 168, 336, 504, 671]
@@ -33,7 +37,7 @@ for i, case in enumerate(cases):
     data = data.drop('S0', axis=1)
 
     ax = axes[i]
-    data.plot(ax=ax, linewidth=1, legend=False)
+    data.plot(ax=ax, linewidth=1, legend=False, color=map_colors)
 
     # ax.set_xlabel(title_dict['x_title'], fontweight='bold')
     ax.set_xlabel('')
@@ -46,16 +50,9 @@ for i, case in enumerate(cases):
     ax.tick_params(axis='x', which='minor', length=0)
 
     # set subplot title
-    ax.set_title(f'Case: {case}', fontweight='bold', fontsize = fontsize)
+    dc_type = 'Small' if case == 'C1' else 'Large' if case == 'C2' else 'Error'
 
-    # ax.set_ylabel(title_dict['y_title_primary'], fontweight='bold')
-
-    # if case == 'C1':
-    #     ax.set_ylim(0, 50)
-    #     ax.set_yticks([0, 10, 20, 30, 40, 50])
-    # elif case == 'C2':
-    #     ax.set_ylim(-20, 80)
-    #     ax.set_yticks([-20, 0, 20, 40, 60, 80])
+    ax.set_title(f'{case} - {dc_type} DC', fontweight='bold', fontsize = fontsize)
 
     ax.set_ylim(-20,80)
     ax.set_yticks([-20, 0, 20, 40, 60, 80])
@@ -64,22 +61,14 @@ for i, case in enumerate(cases):
     ax.grid(axis='y', linestyle='--', alpha=0.5)
 
 
-fig.text(0.00, 0.5, s=title_dict['y_title_primary'], va='center', ha='center', rotation='vertical', fontweight='bold')
-
-
 # Create a shared legend below the subplots
 lines, labels = axes[-1].get_legend_handles_labels()
-# fig.legend(lines, labels, title='Scenario', loc='upper center', ncol=4, bbox_to_anchor=(0.5, 0.0), fancybox=True, shadow=True, title_fontproperties={'weight': 'bold'})
-# fig.legend(lines, labels, loc='upper center', ncol=4, bbox_to_anchor=(0.5, 0.0), fancybox=True, shadow=True, title_fontproperties={'weight': 'bold'})
-fig.legend(lines, labels, loc='upper center', ncol=4, bbox_to_anchor=(0.5, 0.0), fancybox=True, shadow=True, title_fontproperties={'weight': 'bold'})
+fig.legend(lines, labels, loc='lower center', ncol=4, bbox_to_anchor=(0.5, 0.0), fancybox=True, shadow=False)
 
 
-# make room for the legend
-# fig.subplots_adjust(bottom=0.2)
+plt.tight_layout(rect=[0, 0.10, 1, 1]) # Adjust layout to make room for the legend
 
-# Adjust layout
-plt.tight_layout()
-
-# Save and show the figure
-plt.savefig(output_path, dpi=600, bbox_inches='tight')
-# plt.show()
+if save:
+    plt.savefig(plot_path, dpi=DPI, bbox_inches='tight')
+if show:
+    plt.show()

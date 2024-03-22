@@ -7,8 +7,8 @@ def process_data(file_path):
     
     # Constants
     BASELINE = 'S0'
-    MULTIPLIER = 4
-    DIVISOR = 1000
+    MULTIPLIER = 8760/(4*7*24) # hours in 4 weeks per year
+    DIVISOR = 1000 # GWh to MWh
 
     data['value'] = data['value'] * (MULTIPLIER / DIVISOR)
 
@@ -36,33 +36,36 @@ file_path_C2 = 'M:/J2/results/selected_weeks/C2/csv/GENERATION_ELEC.csv'
 diff_from_baseline_C1 = process_data(file_path_C1)
 diff_from_baseline_C2 = process_data(file_path_C2)
 
+diff_from_baseline_C1.rename(columns={'municipal waste': 'mun. waste'}, inplace=True)
+diff_from_baseline_C2.rename(columns={'municipal waste': 'mun. waste'}, inplace=True)
+
 # Plotting
-fig, axes = plt.subplots(1, 2, figsize=(15/2.54, 7.5/2.54))
+fig, axes = plt.subplots(1, 2, figsize=(15/2.54, 7/2.54))
 
 # Plot for C1
 diff_from_baseline_C1.plot(kind='bar', stacked=True, ax=axes[0], legend=False)
 axes[0].set_title('Case: C1', fontweight='bold', fontsize=fontsize)
-# axes[0].set_xlabel('Scenario', fontweight='bold')
-axes[0].set_xlabel('')
-axes[0].set_ylabel('Electricity production change, \n relative to S0 [GWh/year]', fontweight='bold')
-axes[0].set_ylim([-1, 0])
+axes[0].set_xlabel('Scenario', fontweight='bold')
+axes[0].set_ylabel('Annual electricity production change, \n relative to S0 - [GWh]', fontweight='bold')
+axes[0].set_ylim([-3, 0])
 axes[0].grid(axis='y', linestyle='--', linewidth=0.5, alpha=0.5)
 axes[0].set_xticklabels(axes[0].get_xticklabels(), rotation=0)
 
 # Plot for C2
 diff_from_baseline_C2.plot(kind='bar', stacked=True, ax=axes[1], legend=False)
 axes[1].set_title('Case: C2', fontweight='bold', fontsize=fontsize)
-# axes[1].set_xlabel('Scenario', fontweight='bold')
-axes[1].set_xlabel('')
-axes[1].set_ylim([-50, 0])
+axes[1].set_xlabel('Scenario', fontweight='bold')
+axes[1].set_ylim([-150, 0])
+axes[1].set_yticks(range(0, -160, -25))
+
 axes[1].grid(axis='y', linestyle='--', linewidth=0.5, alpha=0.5)
 axes[1].set_xticklabels(axes[1].get_xticklabels(), rotation=0)
 
 # Add a shared legend
 handles, labels = axes[0].get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=3, fancybox=True, shadow=True, bbox_to_anchor=(0.5, 0.0))
-plt.tight_layout(rect=[0, 0.1, 1, 1]) # Adjust layout to make room for the legend
+fig.legend(handles, labels, loc='center right', ncol=1, title="Fuel", title_fontproperties={"weight": "bold"}, fancybox=True, shadow=True)
+plt.tight_layout(rect=[0, 0.0, 0.8, 1])
 
 # Show and save the plot
-plt.savefig(output_path, dpi=600)
+plt.savefig(output_path, dpi=900)
 # plt.show()
